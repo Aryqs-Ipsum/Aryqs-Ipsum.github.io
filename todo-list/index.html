@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple todo list web app, without installation">
+    <meta name="theme-color" content="#fdd835" />
+    <link rel="icon" type="image/png" href="images/icons/icon-192x192.png" />
+
+    <title>Material todolist</title>
+
+    <!-- progressive web app -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- for IOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#fdd835">
+    <meta name="apple-mobile-web-app-title" content="Material todo list">
+    <link rel="apple-touch-icon" href="/images/icons/icon-152x152.png">
+
+    <!-- app -->
+    <link rel="stylesheet" href="app/main.css">
+    <script src="app/main.js"></script>
+
+    <!-- alpine js -->
+    <script defer src="app/alpine.js"></script>
+
+    <!-- getmdl.io -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-deep_orange.min.css" />
+
+</head>
+<body>
+
+    <!-- service worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((reg) => {
+                console.log('Service worker registered.', reg);
+            });
+        });
+    }
+    </script>
+
+
+    <!-- navigation -->
+    <div x-data="navigation()" 
+    class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <span class="mdl-layout-title">To Do list</span>
+                <div class="mdl-layout-spacer"></div>
+                <nav class="mdl-navigation mdl-layout--large-screen-only">
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <nav class="mdl-navigation">
+                <a class="mdl-navigation__link" @click="downloadData()" href="">
+                    <i class="material-icons align">get_app</i> Download data</a>
+                <a class="mdl-navigation__link" @click="if(confirm('Confirmer')) { deleteData() }" href="">
+                    <i class="material-icons align">delete</i> Reset app</a>
+                <a class="mdl-navigation__link" href="#" @click="open = true">
+                    <i class="material-icons align">info</i> About</a>
+
+            </nav>
+        </div>
+
+
+        <!-- about dialog -->
+        <section class="mdl-dialog" x-show="open" @click.away="open = false">
+            <h4 class="mdl-dialog__title">Tasklist</h4>
+            <div class="mdl-dialog__content">
+                <p>
+                    Tasklist is a simple PWA (Progressive Web App) to create To Do lists. It's simple to use and don't need any installation.
+                </p>
+                <a href="https://github.com/Aryqs-Ipsum">github
+                <i class="material-icons align">open_in_new</i></a>
+            </div>
+            <div class="mdl-dialog__actions">
+                <button type="button" class="mdl-button close" @click="open = false">OK</button>
+                <a type="button" class="mdl-button mdl-button--colored" 
+                href="https://developer.mozilla.org/fr/docs/Web/Progressive_web_apps">
+                    web apps <i class="material-icons">open_in_new</i></a>
+            </div>
+        </section>
+
+
+        <!-- main section -->
+        <main class="mdl-layout__content">
+            <div class="page-content">
+
+                <div x-data="taskList()">
+                
+                    <div class="mdl-grid">
+                        <div class="mdl-layout-spacer"></div>
+
+                        <!-- add card -->
+                        <div class="mdl-card mdl-shadow--2dp">
+
+                            <!-- offline banner -->
+                            <div x-show="!navigator.onLine" class="alert mdl-color--amber-200">
+                                <p><i class="material-icons align">signal_wifi_off</i> Application running in offline mode</p>
+                            </div>
+
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">New Task</h2>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="addTask" x-model="taskString" @keydown.enter="addTask">
+                                    <label class="mdl-textfield__label" for="addTask">Do something ...</label>
+                                </div>
+                                <button @click="addTask"
+                                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                                    Add <i class="material-icons">add</i></button>
+                            </div>
+
+                        </div>
+
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+
+                    <div class="mdl-grid">
+                        <div class="mdl-layout-spacer"></div>
+
+                        <div class="mdl-card mdl-shadow--2dp">
+
+                            <!-- banner : completed -->
+                            <div x-show="completedCount() == arrayCount()" class="alert mdl-color--green-200">
+                                <p><i class="material-icons align">thumb_up_alt</i> You have completed all your tasks</p>
+                            </div>
+
+                            <!-- banner : start -->
+                            <div x-show="completedCount() == 0" class="alert mdl-color--amber-200">
+                                <p><i class="material-icons align">info</i> Click on the checkboxes to achieve tasks</p>
+                            </div>
+
+                            <!-- banner : progress-->
+                            <div x-show="completedCount() < arrayCount()" class="alert mdl-color--amber-200">
+                                <div id="p1" class="mdl-progress mdl-js-progress">
+                                    <div class="progressbar bar bar1" x-bind:style="completedPercents()"></div>
+                                </div>
+                                <span x-text="completedCount()"></span> /
+                                <span x-text="arrayCount()"></span>
+                            </div>
+
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">To do :</h2>
+                            </div>
+                            <div class="mdl-card__supporting-text">
+                                <ul class="mdl-list">
+
+                                    <!-- foreach -->
+                                    <template x-for="task in tasks">
+                                        <li class="mdl-list__item mdl-list__item--three-line">
+
+                                            <!-- title -->
+                                            <span x-text="task.split('§')[0]" class="mdl-list__item-text-body" 
+                                            x-bind:class="task.split('§')[1]" style="width: 75%;"></span>
+
+                                            <!-- actions -->
+                                            <span class="mdl-list__item-secondary-content" style="position: absolute;right: 20%;">
+                                                <a class="mdl-list__item-secondary-action mdl-color-text--grey" href=""
+                                                title="supprimer" @click="if(confirm('supprimer')) { deleteTask(task) }"><i class="material-icons">delete</i></a>
+                                            </span>
+                                            <span class="mdl-list__item-secondary-content" style="position: absolute;right: 10%;">
+                                                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" 
+                                                x-bind:for="task" style="display:inline">
+                                                    <input @click="checkTask(task)" x-bind:checked="task.split('§')[1] == 'true'"
+                                                    x-bind:id="task" class="mdl-checkbox__input" type="checkbox" />
+                                                </label>
+                                            </span>
+
+                                        </li>
+                                    </template>
+
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mdl-layout-spacer"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+    
+</body>
+</html>
