@@ -1,6 +1,6 @@
 // storage init
 if(!localStorage.getItem("tasks")) {
-    localStorage.setItem("tasks", "Exemple de première tâche§false")
+    localStorage.setItem("tasks", "Example of task, check me !§false")
 }
 
 function download(filename, text) {
