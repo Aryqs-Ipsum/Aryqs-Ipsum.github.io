@@ -1,12 +1,12 @@
 self.addEventListener('fetch', function(event) {
 
     // CODELAB: Add list of files to cache here.
-    const CACHE_NAME = 'todo_cache'
+    const CACHE_NAME = 'todo-list__cache'
     const FILES_TO_CACHE = [
-        '/index.html',
-        '/app/main.js',
-        '/app/main.css',
-        '/app/alpine.js'
+        '/todo-list/index.html',
+        '/todo-list/app/main.js',
+        '/todo-list/app/main.css',
+        '/todo-list/app/alpine.js'
     ];
 
     // CODELAB: Precache static resources here.
