@@ -12,13 +12,13 @@
     <title>Material todolist</title>
 
     <!-- progressive web app -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
 
     <!-- for IOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="#fdd835">
     <meta name="apple-mobile-web-app-title" content="Material todo list">
-    <link rel="apple-touch-icon" href="/images/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
 
     <!-- app -->
     <link rel="stylesheet" href="app/main.css">
@@ -39,7 +39,7 @@
     <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
+            navigator.serviceWorker.register('service-worker.js')
                 .then((reg) => {
                 console.log('Service worker registered.', reg);
             });
