@@ -9,11 +9,11 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.css">
-    <script defer src="https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.js"></script>
+    <link rel="stylesheet" href="build/gl.css">
+    <script defer src="build/gl.js"></script>
 </head>
 
-<body>
+<body class="">
 
     <aside class="modal js-modal-closable" id="modal1">
         <div class="content">
@@ -23,7 +23,7 @@
         </div>
     </aside>
 
-    <header class="top-app-bar elevated colored">
+    <header id="topbar" class="top-app-bar elevated colored">
         <div class="wrapper">
             <div class="left">
                 <button class="btn icon js-drawer-trigger"><i class="material-icons">menu</i></button>
@@ -49,6 +49,7 @@
             <i class="material-icons">palette</i>
             <span>Colors</span>
         </div>
+        <hr>
         <div role="button" class="item" onclick="path('components/top-app-bar')">
             <i class="material-icons" style="transform: rotate(180deg);">call_to_action</i>
             <span>Top App Bar</span>
@@ -58,35 +59,83 @@
 
     <main class="padding">
 
-        <div id="guide-intro" class="row page">
+        <div id="error-404" class="row page">
+            <h1>404</h1>
+            <p>Requested page not found</p>
+        </div>
 
+        <!-- /guide/ -->
+
+        <div id="guide-intro" class="row page">
+            <a href="#modal1" class="btn text medium primary js-modal-trigger">Open modal <i
+                class="material-icons">launch</i></a>
         </div>
 
         <div id="guide-quickstart" class="row page">
-            <div class="card elevated">
-                <pre class="prettyprint">
-&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.css&quot;&gt;
-&lt;script defer src=&quot;https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.js&quot;&gt;&lt;/script&gt;
-                </pre>
-            </div>
-        </div>
-
-        <div id="theme-colors" class="row page">
-            <div class="col s12">
-                <div class="card outlined">
-                    <h1>Hello World !</h1>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis sint, debitis delectus
-                        architecto
-                        obcaecati nobis ab sit iste eos provident illum ex laboriosam, fuga autem exercitationem vero
-                        totam at
-                        incidunt?</p>
-                    <a href="#modal1" class="btn text medium primary js-modal-trigger">Open modal <i
-                            class="material-icons">launch</i></a>
+            <div class="card outlined">
+                <div class="code-wrapper">
+                    <pre class="prettyprint">
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.min.css&quot;&gt;
+&lt;script defer src=&quot;https://cdn.jsdelivr.net/gh/Aryqs-Ipsum/gl-css/build/gl.min.js&quot;&gt;&lt;/script&gt;</pre>
                 </div>
             </div>
         </div>
 
+        <!-- /theme/ -->
+
+        <div id="theme-colors" class="row page">
+            <div class="col s6 m4 color-parcel" style="background: var(--color-primary);">
+                <p style="color: var(--color-primary-text)">Primary color</p>
+            </div>
+            <div class="col s6 m4 color-parcel" style="background: var(--color-secondary);">
+                <p style="color: var(--color-secondary-text)">Secondary color</p>
+            </div>
+            <div class="col s6 m4 color-parcel" style="background: var(--color-background);border: 1px solid rgb(150 150 150 / 15%)">
+                <p style="color: var(--color-background-text)">Text on background color</p>
+            </div>
+            <div class="col s6 m4 color-parcel" style="background: var(--color-background-alt);">
+                <p style="color: var(--color-background-text-alt)">Alt text on background alt color</p>
+            </div>
+            <hr>
+            <input type="checkbox" id="dark-mode-input" onclick="document.querySelector('body').classList.toggle('dark')">
+            <label for="dark-mode-input">dark mode</label>
+        </div>
+
+        <!-- /components/ -->
+
+        <div id="components-top-app-bar" class="row page">
+            <input checked type="checkbox" id="topbar-elevated-input" onclick="document.getElementById('topbar').classList.toggle('elevated')">
+            <label for="topbar-elevated-input">elevated</label>
+            <input checked type="checkbox" id="topbar-colored-input" onclick="document.getElementById('topbar').classList.toggle('colored')">
+            <label for="topbar-colored-input">colored</label>
+        </div>
+
     </main>
+
+    <style>
+        .code-wrapper {
+            padding: 8px;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+            background-color: #eaeaea;
+            border-radius: var(--medium-radius);
+        }
+        pre.prettyprint {
+            border: none;
+            margin: 0;
+        }
+        .color-parcel {
+            height: 150px;
+            position: relative;
+        }
+        .color-parcel p {
+            position: absolute;
+            font-family: "Google Sans", Arial, Helvetica, sans-serif;
+            bottom: 0;
+            left: 16px;
+        }
+    </style>
 
     <script>
         const reset = function () {
@@ -108,6 +157,7 @@
                 page.style.display = 'block'
             } else {
                 console.log('404 :', id)
+                document.getElementById('error-404').style.display = 'block';
             }
             a.click()
             a.remove()
