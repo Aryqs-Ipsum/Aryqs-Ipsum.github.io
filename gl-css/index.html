@@ -27,7 +27,7 @@
     const main = document.querySelector('main');
     const drawer = document.querySelector('aside.drawer');
     const loader = document.getElementById('router-loader');
-    const parseLocation = () => location.hash.slice(1).toLowerCase() || '/';
+    const parseLocation = () => location.hash.slice(1).toLowerCase() || '/guide/quickstart';
 
     const renderDrawer = (path = '/') => {
         var drawerDom = '';
